@@ -28,7 +28,6 @@ jobs:
 
       - name: Build
         run: make all-arch -j
-        continue-on-error: true
 
       - name: Create tar
         run: |
@@ -39,7 +38,7 @@ jobs:
           tar -cf okapi-utils_windows_arm64.tar build/windows/arm64/*
           tar -cf okapi-utils_windows_386.tar build/windows/386/*
           tar -cf okapi-utils.tar build/*
-          zstd --ultra -22 okapi-utils*.tar
+          zstd -T0 --ultra -22 okapi-utils*.tar
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v3
