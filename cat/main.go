@@ -31,12 +31,26 @@ func main() {
 		os.Exit(0)
 	}
 
+	buffer := make([]byte, bufferSize)
+
 	if len(args) == 0 {
 		// Read from stdin
-		_, err := io.Copy(os.Stdout, os.Stdin)
-		if err != nil {
-			fmt.Println("Error copying from stdin:", err)
-			os.Exit(1)
+		for {
+			n, err := os.Stdin.Read(buffer)
+			if err != nil && err != io.EOF {
+				fmt.Println("Error reading from stdin:", err)
+				os.Exit(1)
+			}
+			if n > 0 {
+				_, err = os.Stdout.Write(buffer[:n])
+				if err != nil {
+					fmt.Println("Error writing to stdout:", err)
+					os.Exit(1)
+				}
+			}
+			if err == io.EOF {
+				break
+			}
 		}
 	} else {
 		// Read from file
@@ -46,10 +60,22 @@ func main() {
 			os.Exit(1)
 		}
 		defer file.Close()
-		_, err = io.Copy(os.Stdout, file)
-		if err != nil {
-			fmt.Println("Error copying from file:", err)
-			os.Exit(1)
+		for {
+			n, err := file.Read(buffer)
+			if err != nil && err != io.EOF {
+				fmt.Println("Error reading from file:", err)
+				os.Exit(1)
+			}
+			if n > 0 {
+				_, err = os.Stdout.Write(buffer[:n])
+				if err != nil {
+					fmt.Println("Error writing to stdout:", err)
+					os.Exit(1)
+				}
+			}
+			if err == io.EOF {
+				break
+			}
 		}
 	}
 }
