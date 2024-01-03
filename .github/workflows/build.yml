@@ -53,6 +53,7 @@ jobs:
       - name: Delete old release and tag
         uses: dev-drprasad/delete-tag-and-release@v1.0.1
         with:
+          continue_on_error: true
           delete_release: true
           tag_name: latest_auto
           github_token: ${{ secrets.GITHUB_TOKEN }}
