@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -33,22 +33,23 @@ func main() {
 
 	if len(args) == 0 {
 		// Read from stdin
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+		_, err := io.Copy(os.Stdout, os.Stdin)
+		if err != nil {
+			fmt.Println("Error copying from stdin:", err)
+			os.Exit(1)
+		}
+	} else {
+		// Read from file
+		file, err := os.Open(args[0])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		_, err = io.Copy(os.Stdout, file)
+		if err != nil {
+			fmt.Println("Error copying from file:", err)
+			os.Exit(1)
 		}
 	}
-
-	// Read from file
-	file, err := os.Open(args[0])
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-
 }
