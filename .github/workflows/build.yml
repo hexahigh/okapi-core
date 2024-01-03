@@ -1,0 +1,75 @@
+name: go build and Pre-release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update apt packages
+        run: |
+          sudo apt update
+          sudo apt upgrade -y
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21.4
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: go get -v -t -d ./...
+
+      - name: Build
+        run: make all-arch -j
+        continue-on-error: true
+
+      - name: Create tar
+        run: |
+          tar -cf okapi_utils.tar build/*
+          zstd --ultra -22 -o okapi_utils.tar.zst okapi_utils.tar
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: |
+            okapi_utils.tar
+            okapi_utils.tar.zst
+            
+  upload:
+    name: Upload release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Delete old release and tag
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        with:
+          delete_release: true
+          tag_name: latest_auto
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: build
+
+      - name: Release to GitHub
+        uses: ncipollo/release-action@v1
+        with:
+            name: Latest Autobuild
+            tag: latest_auto
+            commit: main
+            body: ${{ github.event.head_commit.message }}
+            artifacts: |
+              build/okapi_utils.tar
+              build/okapi_utils.tar.zst
+            prerelease: true
