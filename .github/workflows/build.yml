@@ -71,6 +71,6 @@ jobs:
             commit: main
             body: ${{ github.event.head_commit.message }}
             artifacts: |
-              build/okapi_utils.tar
-              build/okapi_utils.tar.zst
+              okapi_utils.tar
+              okapi_utils.tar.zst
             prerelease: true
