@@ -32,16 +32,31 @@ jobs:
 
       - name: Create tar
         run: |
-          tar -cf okapi_utils.tar build/*
-          zstd --ultra -22 -o okapi_utils.tar.zst okapi_utils.tar
+          tar -cf okapi-utils_linux_amd64.tar build/linux/amd64/*
+          tar -cf okapi-utils_linux_arm64.tar build/linux/arm64/*
+          tar -cf okapi-utils_linux_386.tar build/linux/386/*
+          tar -cf okapi-utils_windows_amd64.tar build/windows/amd64/*
+          tar -cf okapi-utils_windows_arm64.tar build/windows/arm64/*
+          tar -cf okapi-utils_windows_386.tar build/windows/386/*
+          zstd --ultra -22 okapi-utils*.tar
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v3
         with:
           name: build
           path: |
-            okapi_utils.tar
-            okapi_utils.tar.zst
+            okapi-utils_linux_amd64.tar
+            okapi-utils_linux_arm64.tar
+            okapi-utils_linux_386.tar
+            okapi-utils_windows_amd64.tar
+            okapi-utils_windows_arm64.tar
+            okapi-utils_windows_386.tar
+            okapi-utils_linux_amd64.tar.zst
+            okapi-utils_linux_arm64.tar.zst
+            okapi-utils_linux_386.tar.zst
+            okapi-utils_windows_amd64.tar.zst
+            okapi-utils_windows_arm64.tar.zst
+            okapi-utils_windows_386.tar.zst
             
   upload:
     name: Upload release
@@ -60,8 +75,6 @@ jobs:
 
       - name: Get artifacts
         uses: actions/download-artifact@v3
-        with:
-          path: build
 
       - name: Release to GitHub
         uses: ncipollo/release-action@v1
@@ -71,6 +84,16 @@ jobs:
             commit: main
             body: ${{ github.event.head_commit.message }}
             artifacts: |
-              okapi_utils.tar
-              okapi_utils.tar.zst
+                okapi-utils_linux_amd64.tar
+                okapi-utils_linux_arm64.tar
+                okapi-utils_linux_386.tar
+                okapi-utils_windows_amd64.tar
+                okapi-utils_windows_arm64.tar
+                okapi-utils_windows_386.tar
+                okapi-utils_linux_amd64.tar.zst
+                okapi-utils_linux_arm64.tar.zst
+                okapi-utils_linux_386.tar.zst
+                okapi-utils_windows_amd64.tar.zst
+                okapi-utils_windows_arm64.tar.zst
+                okapi-utils_windows_386.tar.zst
             prerelease: true
