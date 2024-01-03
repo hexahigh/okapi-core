@@ -66,5 +66,5 @@ func remove(path string, recursive, force, verbose bool) error {
 		}
 	}
 
-	return os.RemoveAll(path)
+	return os.Remove(path)
 }
