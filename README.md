@@ -1,5 +1,5 @@
 # Okapi utils
-![Build and release](https://github.com/hexahigh/okapi-core/actions/workflows/build&release.yml/badge.svg)
+![Build and release](https://github.com/hexahigh/okapi-core/actions/workflows/build.yml/badge.svg)
 [![Release](https://img.shields.io/github/release/hexahigh/okapi-core.svg)](https://github.com/hexahigh/okapi-core/releases)
 [![License](https://img.shields.io/github/license/hexahigh/okapi-core)](https://github.com/hexahigh/okapi-core/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/hexahigh/okapi-core/total.svg)](https://github.com/hexahigh/okapi-core/releases)
